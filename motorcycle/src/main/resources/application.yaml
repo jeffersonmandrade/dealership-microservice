@@ -1,0 +1,26 @@
+app:
+  serverPort: 8082
+#  serverPort: ${PORT:0}
+server:
+  port: ${app.serverPort}
+spring:
+  application:
+    name: motorcycle-service
+  datasource:
+    url: jdbc:h2:mem:motorcycle
+    username: admin
+    password: pass
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

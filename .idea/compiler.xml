@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="motorcycle" />
+        <module name="auth-service" />
+        <module name="car" />
+        <module name="eureka" />
+        <module name="nota-worker" />
+        <module name="dealership" />
+        <module name="nota" />
+        <module name="gateway" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="auth-service" options="-parameters" />
+      <module name="car" options="-parameters" />
+      <module name="dealership" options="-parameters" />
+      <module name="eureka" options="-parameters" />
+      <module name="gateway" options="-parameters" />
+      <module name="motorcycle" options="-parameters" />
+      <module name="nota" options="-parameters" />
+      <module name="nota-worker" options="-parameters" />
+    </option>
+  </component>
+</project>

@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: car
+          uri: lb://CAR-SERVICE
+          predicates:
+            - Path=/car/**
+          filters:
+            - StripPrefix=1
+            - name: Retry
+              args:
+                retries: 3
+                methods: GET,POST
+                backoff:
+                  initialInterval: 100ms
+                  maxInterval: 2s
+                  multiplier: 1.5
+        - id: motorcycle
+          uri: lb://MOTORCYCLE-SERVICE
+          predicates:
+            - Path=/motorcycle/**
+          filters:
+            - StripPrefix=1
+            - name: Retry
+              args:
+                retries: 3
+                methods: GET,POST
+                backoff:
+                  initialInterval: 100ms
+                  maxInterval: 2s
+                  multiplier: 1.5
+        - id: dealership
+          uri: lb://DEALERSHIP
+          predicates:
+            - Path=/dealership/**
+          filters:
+            - StripPrefix=1
+server:
+  port: 9999
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

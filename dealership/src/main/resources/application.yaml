@@ -1,0 +1,22 @@
+app:
+  serverPort: 8080
+#  serverPort: ${PORT:0}
+spring:
+  application:
+    name: dealership
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      valorTotal:
+        register-health-indicator: true
+        minimum-number-of-calls: 1
+        sliding-window-size: 3
+        wait-duration-in-open-state:
+          seconds: 1000

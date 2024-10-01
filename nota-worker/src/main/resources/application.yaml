@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: nota-worker
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 5000
+          multiplier: 2.0
+app:
+  serverPort: 8090
+#  serverPort: ${PORT:0}
+server:
+  port: ${app.serverPort}
