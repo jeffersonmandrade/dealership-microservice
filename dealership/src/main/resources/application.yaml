@@ -3,7 +3,7 @@ app:
 #  serverPort: ${PORT:0}
 spring:
   application:
-    name: dealership
+    name: dealership-service
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}

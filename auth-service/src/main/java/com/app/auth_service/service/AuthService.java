@@ -21,6 +21,7 @@ public class AuthService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     public User registerUser(RegisterRequest registerRequest) {
       var user =  User.builder()
@@ -33,11 +34,12 @@ public class AuthService {
         return userService.createUser(user);
     }
 
-    public void authenticate(LoginRequest loginRequest) {
+    public String authenticate(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken userAuth = new UsernamePasswordAuthenticationToken(loginRequest.login(), loginRequest.password());
         Authentication authenticate = authenticationManager.authenticate(userAuth);
         var  userAuthenticated = (User) authenticate.getPrincipal();
         List<String> roles = getRoles(authenticate.getAuthorities());
+        return jwtService.generateToken(userAuthenticated, roles);
     }
 
     public List<String> getRoles(Collection<? extends GrantedAuthority> authorities) {

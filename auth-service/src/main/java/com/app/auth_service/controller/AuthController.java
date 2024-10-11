@@ -1,6 +1,8 @@
 package com.app.auth_service.controller;
 
 import com.app.auth_service.payload.LoginRequest;
+import com.app.auth_service.payload.ResponsePayload;
+import com.app.auth_service.service.AuthService;
 import com.app.auth_service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AuthController {
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/auth")
     public ResponseEntity<?> auth(@RequestBody LoginRequest loginRequest){
-        return null;
+        return ResponseEntity.ok(new ResponsePayload(authService.authenticate(loginRequest)));
     }
 }

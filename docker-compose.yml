@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  gateway-service:
+    image: jefandrade/gateway:1.0
+    container_name: gateway-service
+    ports:
+      - "9999:9999"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+      - car-service
+      - motorcycle-service
+      - dealership-service
+      - nota-worker
+      - nota-service
+    networks:
+      - app-network
+
+  eureka-server:
+    image: jefandrade/eureka:1.0
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - app-network
+
+  car-service:
+    image: jefandrade/car:v1.0
+    container_name: car-service
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+    networks:
+      - app-network
+
+  motorcycle-service:
+    image: jefandrade/motorcycle:1.0
+    container_name: motorcycle-service
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+    networks:
+      - app-network
+
+  dealership-service:
+    image: jefandrade/dealership:v1.0
+    container_name: dealership-service
+    ports:
+      - "8085:8085"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+    networks:
+      - app-network
+
+  nota-service:
+    image: jefandrade/nota:1.0
+    container_name: nota-service
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_APPLICATION_NAME=nota-service
+      - SERVER_PORT=8085
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - app-network
+
+  nota-worker:
+    image: jefandrade/nota-worker:1.0
+    container_name: nota-worker
+    ports:
+      - "8090:8090"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_APPLICATION_NAME=nota-worker
+      - SERVER_PORT=8090
+      - SPRING_RABBITMQ_LISTENER_SIMPLE_RETRY_ENABLED=true
+      - SPRING_RABBITMQ_LISTENER_SIMPLE_RETRY_MAX-ATTEMPTS=3
+      - SPRING_RABBITMQ_LISTENER_SIMPLE_RETRY_INITIAL-INTERVAL=5000
+      - SPRING_RABBITMQ_LISTENER_SIMPLE_RETRY_MULTIPLIER=2.0
+    networks:
+      - app-network
+
+  postgresql:
+    image: postgres:latest
+    container_name: postgresql
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+
+volumes:
+  postgres-data:
+
+networks:
+  app-network:
+    driver: bridge
