@@ -1,0 +1,28 @@
+# Ignore Java .class files
+*.class
+
+# Ignore JAR files
+*.jar
+
+# Ignore build directories
+/build/
+target/
+
+# Ignore IDE specific files
+/.idea/
+/*.iml
+/.project
+/.classpath
+/.settings/
+/.vscode/
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
