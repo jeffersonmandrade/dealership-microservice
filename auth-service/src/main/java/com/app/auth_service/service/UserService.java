@@ -16,9 +16,6 @@ import java.util.Optional;
 public class UserService  implements UserDetailsService {
     private final UserRepository userRepository;
 
-    public List<User> getAll(){
-        return userRepository.findAll();
-    }
 
     public User createUser(User user){
         return userRepository.save(user);
