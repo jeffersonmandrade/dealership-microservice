@@ -70,7 +70,7 @@ services:
     environment:
       - SPRING_APPLICATION_NAME=nota-service
       - SERVER_PORT=8085
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/postgres
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=123456
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
@@ -94,6 +94,41 @@ services:
       - SPRING_RABBITMQ_LISTENER_SIMPLE_RETRY_MAX-ATTEMPTS=3
       - SPRING_RABBITMQ_LISTENER_SIMPLE_RETRY_INITIAL-INTERVAL=5000
       - SPRING_RABBITMQ_LISTENER_SIMPLE_RETRY_MULTIPLIER=2.0
+    networks:
+      - app-network
+
+  auth-service:
+    image: jefandrade/auth-service:1.0
+    container_name: auth-service
+    ports:
+      - "9997:9997"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/usuarios
+      SPRING_DATASOURCE_USERNAME: user-service
+      SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: true
+      JWT_SECRET: secret
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    depends_on:
+      - mariadb
+    networks:
+      - app-network
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: usuarios
+      MYSQL_USER: user-service
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: root_password # Defina uma senha segura
+    volumes:
+      - mariadb_data:/var/lib/mysql
     networks:
       - app-network
 
@@ -121,6 +156,7 @@ services:
       - app-network
 
 volumes:
+  mariadb_data:
   postgres-data:
 
 networks:
